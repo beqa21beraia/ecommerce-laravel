@@ -35,7 +35,7 @@ class ProductController extends Controller
      */
     public function show(string $route)
     {
-        return ProductDetailResource::collection(
+        return new ProductDetailResource(
             $this->productService->findByRoute($route)
         );
     }
