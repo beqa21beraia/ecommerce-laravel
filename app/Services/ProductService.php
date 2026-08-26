@@ -15,10 +15,11 @@ class ProductService
             'is_new' => 'nullable|boolean',
             'search' => 'nullable|string|max:255',
             'category' => 'nullable|string|max:255|alpha_dash',
+            'brand' => 'nullable|string|max:255|alpha_dash',
             'page' => 'nullable|integer|min:1',
         ]);
 
-        $query = Product::with('attachments')
+        $query = Product::with(['attachments', 'brand'])
             ->where('is_visible', true);
 
         if (!empty($validated['is_hot'])) {
@@ -39,12 +40,18 @@ class ProductService
             });
         }
 
+        if (!empty($validated['brand'])) {
+            $query->whereHas('brand', function ($q) use ($validated) {
+                $q->where('route', $validated['brand']);
+            });
+        }
+
         return $query->orderBy('position')->paginate(12);
     }
 
     public function findByRoute(string $route): Product
     {
-        return Product::with(['attachments', 'categories'])
+        return Product::with(['attachments', 'categories', 'brand'])
             ->where('route', $route)
             ->firstOrFail();
     }

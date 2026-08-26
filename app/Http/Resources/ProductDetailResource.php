@@ -24,6 +24,14 @@ class ProductDetailResource extends JsonResource
             'attachments' => $this->attachments->pluck('file_url'),
             'categories' => CategoryResource::collection($this->whenLoaded('categories')),
             'related_products' => ProductResource::collection($this->whenLoaded('relatedProducts')),
+            'brand' => $this->whenLoaded('brand', function () {
+                return [
+                    'name' => $this->brand->name,
+                    'route' => $this->brand->route,
+                    'country' => $this->brand->country,
+                    'image' => $this->brand->image,
+                ];
+            })
         ];
     }
 }

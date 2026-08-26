@@ -18,7 +18,13 @@ class ProductResource extends JsonResource
             'is_on_sale' => $this->isOnSale(),
             'is_hot' => $this->is_hot,
             'is_new' => $this->is_new,
-            'thumbnail' => optional($this->attachments->first())->file_url
+            'thumbnail' => optional($this->attachments->first())->file_url,
+            'brand' => $this->whenLoaded('brand', function () {
+                return [
+                    'name' => $this->brand->name,
+                    'route' => $this->brand->route,
+                ];
+            })
         ];
     }
 }
