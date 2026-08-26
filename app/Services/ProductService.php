@@ -10,28 +10,36 @@ class ProductService
 {
     public function list(Request $request): LengthAwarePaginator
     {
+        $validated = $request->validate([
+            'is_hot' => 'nullable|boolean',
+            'is_new' => 'nullable|boolean',
+            'search' => 'nullable|string|max:255',
+            'category' => 'nullable|string|max:255|alpha_dash',
+            'page' => 'nullable|integer|min:1',
+        ]);
+
         $query = Product::with('attachments')
             ->where('is_visible', true);
 
-        if ($request->boolean('is_hot')) {
+        if (!empty($validated['is_hot'])) {
             $query->where('is_hot', true);
         }
 
-        if ($request->boolean('is_new')) {
+        if (!empty($validated['is_new'])) {
             $query->where('is_new', true);
         }
 
-        if ($request->filled('search')) {
-            $query->where('title', 'like', '%' . $request->input('search') . '%');
+        if (!empty($validated['search'])) {
+            $query->where('title', 'like', '%' . $validated['search'] . '%');
         }
 
-        if ($request->filled('category')) {
-            $query->whereHas('categories', function ($q) use ($request) {
-                $q->where('route', $request->input('category'));
+        if (!empty($validated['category'])) {
+            $query->whereHas('categories', function ($q) use ($validated) {
+                $q->where('route', $validated['category']);
             });
         }
 
-        return $query->orderBy('position')->paginate(15);
+        return $query->orderBy('position')->paginate(12);
     }
 
     public function findByRoute(string $route): Product
