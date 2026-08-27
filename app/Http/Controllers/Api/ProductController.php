@@ -22,6 +22,23 @@ class ProductController extends Controller
         );
     }
 
+    public function search(Request $request)
+    {
+        $validated = $request->validate([
+            'is_hot' => 'nullable|boolean',
+            'is_new' => 'nullable|boolean',
+            'search' => 'nullable|string|max:255',
+            'category' => 'nullable|string|max:255|alpha_dash',
+            'brand' => 'nullable|string|max:255|alpha_dash',
+            'price_min' => 'nullable|numeric|min:0',
+            'price_max' => 'nullable|numeric|min:0|gte:price_min',
+        ]);
+
+        return ProductResource::collection(
+            $this->productService->search($validated)
+        );
+    }
+
     /**
      * Store a newly created resource in storage.
      */
