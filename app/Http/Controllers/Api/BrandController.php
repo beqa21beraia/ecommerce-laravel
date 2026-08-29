@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class BrandController extends Controller
 {
-    protected $brandService;
+    protected BrandService $brandService;
 
     public function __construct(BrandService $brandService)
     {
@@ -23,7 +23,7 @@ class BrandController extends Controller
         return BrandResource::collection($brands);
     }
 
-    public function show($route)
+    public function show(string $route)
     {
         $brand = $this->brandService->findByRoute($route);
         if (!$brand) {

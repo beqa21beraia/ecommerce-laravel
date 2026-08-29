@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\BrandController;
@@ -17,3 +18,8 @@ Route::get('/brands/{route}', [BrandController::class, 'show']);
 
 //POST
 Route::post('products/search', [ProductController::class, 'search']);
+
+Route::post('/auth/request-code', [AuthController::class, 'requestCode'])
+    ->middleware('throttle:verification-code');
+Route::post('/auth/verify-code', [AuthController::class, 'verifyCode'])
+    ->middleware('throttle:code-verification');
