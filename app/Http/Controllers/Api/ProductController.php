@@ -17,8 +17,17 @@ class ProductController extends Controller
      */
     public function index(Request $request)
     {
+        $validated = $request->validate([
+            'is_hot' => 'nullable|boolean',
+            'is_new' => 'nullable|boolean',
+            'search' => 'nullable|string|max:255',
+            'category' => 'nullable|string|max:255|alpha_dash',
+            'brand' => 'nullable|string|max:255|alpha_dash',
+            'page' => 'nullable|integer|min:1',
+        ]);
+
         return ProductResource::collection(
-            $this->productService->list($request)
+            $this->productService->list($validated)
         );
     }
 

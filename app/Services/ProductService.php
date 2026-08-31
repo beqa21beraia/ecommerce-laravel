@@ -4,45 +4,35 @@ namespace App\Services;
 
 use App\Models\Product;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Http\Request;
 
 class ProductService
 {
-    public function list(Request $request): LengthAwarePaginator
+    public function list(array $filters): LengthAwarePaginator
     {
-        $validated = $request->validate([
-            'is_hot' => 'nullable|boolean',
-            'is_new' => 'nullable|boolean',
-            'search' => 'nullable|string|max:255',
-            'category' => 'nullable|string|max:255|alpha_dash',
-            'brand' => 'nullable|string|max:255|alpha_dash',
-            'page' => 'nullable|integer|min:1',
-        ]);
-
         $query = Product::with(['attachments', 'brand'])
             ->where('is_visible', true);
 
-        if (!empty($validated['is_hot'])) {
+        if (!empty($filters['is_hot'])) {
             $query->where('is_hot', true);
         }
 
-        if (!empty($validated['is_new'])) {
+        if (!empty($filters['is_new'])) {
             $query->where('is_new', true);
         }
 
-        if (!empty($validated['search'])) {
-            $query->where('title', 'like', '%' . $validated['search'] . '%');
+        if (!empty($filters['search'])) {
+            $query->where('title', 'like', '%' . $filters['search'] . '%');
         }
 
-        if (!empty($validated['category'])) {
-            $query->whereHas('categories', function ($q) use ($validated) {
-                $q->where('route', $validated['category']);
+        if (!empty($filters['category'])) {
+            $query->whereHas('categories', function ($q) use ($filters) {
+                $q->where('route', $filters['category']);
             });
         }
 
-        if (!empty($validated['brand'])) {
-            $query->whereHas('brand', function ($q) use ($validated) {
-                $q->where('route', $validated['brand']);
+        if (!empty($filters['brand'])) {
+            $query->whereHas('brand', function ($q) use ($filters) {
+                $q->where('route', $filters['brand']);
             });
         }
 
