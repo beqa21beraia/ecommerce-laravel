@@ -23,3 +23,11 @@ Route::post('/auth/request-code', [AuthController::class, 'requestCode'])
     ->middleware('throttle:verification-code');
 Route::post('/auth/verify-code', [AuthController::class, 'verifyCode'])
     ->middleware('throttle:code-verification');
+
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/me', [AuthController::class, 'me']);
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
+
+});
