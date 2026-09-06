@@ -28,6 +28,7 @@ Route::post('/auth/verify-code', [AuthController::class, 'verifyCode'])
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/me', [AuthController::class, 'me']);
+    Route::put('/me', [AuthController::class, 'updateProfile']);
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
 });

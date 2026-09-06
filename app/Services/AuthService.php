@@ -27,12 +27,15 @@ class AuthService
 
         Cache::forget($this->cacheKey($phone));
 
-        $user = User::firstOrCreate(
-            ['phone' => $phone],
-            ['phone_verified_at' => now()]
-        );
+        $user = User::where('phone', $phone)->first();
+        $isNewUser = is_null($user);
 
-        if (is_null($user->phone_verified_at)) {
+        if ($isNewUser) {
+            $user = User::create([
+                'phone' => $phone,
+                'phone_verified_at' => now(),
+            ]);
+        } elseif (is_null($user->phone_verified_at)) {
             $user->update(['phone_verified_at' => now()]);
         }
 
@@ -41,6 +44,7 @@ class AuthService
         return [
             'user' => $user,
             'token' => $token,
+            'is_new_user' => $isNewUser,
         ];
     }
 
