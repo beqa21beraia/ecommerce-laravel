@@ -28,8 +28,10 @@ class AuthController extends Controller
             'code' => 'required|string|size:6',
         ]);
 
+        $guestCartToken = $request->header('X-Cart-Token');
+
         try {
-            $result = $this->authService->verifyCode($validated['phone'], $validated['code']);
+            $result = $this->authService->verifyCode($validated['phone'], $validated['code'], $guestCartToken);
         } catch (\InvalidArgumentException $e) {
             return response()->json(['message' => $e->getMessage()], 422);
         }

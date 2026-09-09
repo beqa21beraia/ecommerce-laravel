@@ -17,7 +17,7 @@ class AuthService
         $this->sendCode($phone, $code);
     }
 
-    public function verifyCode(string $phone, string $code): array
+    public function verifyCode(string $phone, string $code, ?string $guestCartToken = null): array
     {
         $storedCode = Cache::get($this->cacheKey($phone));
 
@@ -37,6 +37,10 @@ class AuthService
             ]);
         } elseif (is_null($user->phone_verified_at)) {
             $user->update(['phone_verified_at' => now()]);
+        }
+
+        if ($guestCartToken) {
+            app(CartService::class)->mergeGuestCartIntoUserCart($guestCartToken, $user->id);
         }
 
         $token = $user->createToken('api-token')->plainTextToken;

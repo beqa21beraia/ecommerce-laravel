@@ -71,4 +71,38 @@ class CartService
             throw new \RuntimeException("Only {$product->amount_in_stock} of {$product->title} available.");
         }
     }
+
+    public function mergeGuestCartIntoUserCart(?string $guestToken, int $userId): void
+    {
+        if (!$guestToken) {
+            return;
+        }
+
+        $guestCart = Cart::where('guest_token', $guestToken)->first();
+
+        if (!$guestCart) {
+            return;
+        }
+
+        $userCart = Cart::firstOrCreate(['user_id' => $userId]);
+
+        foreach ($guestCart->items as $guestItem) {
+            $existingItem = $userCart->items()->where('product_id', $guestItem->product_id)->first();
+
+            if ($existingItem) {
+                $newQuantity = $existingItem->quantity + $guestItem->quantity;
+                $product = $guestItem->product;
+                $existingItem->update([
+                    'quantity' => min($newQuantity, $product->amount_in_stock),
+                ]);
+            } else {
+                $userCart->items()->create([
+                    'product_id' => $guestItem->product_id,
+                    'quantity' => min($guestItem->quantity, $guestItem->product->amount_in_stock),
+                ]);
+            }
+        }
+
+        $guestCart->delete();
+    }
 }
