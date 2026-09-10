@@ -58,7 +58,9 @@ Route::get('/products/{route}', [ProductController::class, 'show']);
 |--------------------------------------------------------------------------
 */
 
-Route::get('/cart', [CartController::class, 'show']);
-Route::post('/cart/items', [CartController::class, 'addItem']);
-Route::put('/cart/items', [CartController::class, 'updateItem']);
-Route::delete('/cart/items', [CartController::class, 'removeItem']);
+Route::middleware('auth.optional')->group(function () {
+    Route::get('/cart', [CartController::class, 'show']);
+    Route::post('/cart/items', [CartController::class, 'addItem']);
+    Route::put('/cart/items', [CartController::class, 'updateItem']);
+    Route::delete('/cart/items', [CartController::class, 'removeItem']);
+});
