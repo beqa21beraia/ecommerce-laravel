@@ -77,4 +77,8 @@ class Product extends Model
         return $this->isOnSale() ? $this->sale_price : $this->price;
     }
 
+    public function favoritedBy(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'favorites');
+    }
 }
