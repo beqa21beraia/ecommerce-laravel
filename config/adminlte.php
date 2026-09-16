@@ -1171,4 +1171,33 @@ return [
     */
 
     'spa_navigation' => true,
+
+
+    'menu' => [
+        [
+            'text' => 'Dashboard',
+            'url' => 'admin',
+            'icon' => 'fas fa-fw fa-tachometer-alt',
+        ],
+        [
+            'text' => 'Products',
+            'url' => 'admin/products',
+            'icon' => 'fas fa-fw fa-box',
+        ],
+        [
+            'text' => 'Categories',
+            'url' => 'admin/categories',
+            'icon' => 'fas fa-fw fa-sitemap',
+        ],
+        [
+            'text' => 'Brands',
+            'url' => 'admin/brands',
+            'icon' => 'fas fa-fw fa-tags',
+        ],
+        [
+            'text' => 'Orders',
+            'url' => 'admin/orders',
+            'icon' => 'fas fa-fw fa-shopping-cart',
+        ],
+    ],
 ];

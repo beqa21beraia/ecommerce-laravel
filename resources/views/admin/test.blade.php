@@ -1,6 +1,4 @@
-@extends('adminlte::page')
-
-@section('title', 'Admin Test')
+@extends('admin.layouts.app')
 
 @section('content_header')
     <h1>It works</h1>
