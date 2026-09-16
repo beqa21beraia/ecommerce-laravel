@@ -15,7 +15,10 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'auth.optional' => \App\Http\Middleware\AuthenticateOptional::class,
+            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
         ]);
+
+        $middleware->redirectGuestsTo('/admin/login');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
@@ -19,11 +20,15 @@ class User extends Authenticatable
         'first_name',
         'last_name',
         'email',
+        'password',
     ];
 
     protected $casts = [
         'phone_verified_at' => 'datetime',
+        'role' => UserRole::class
     ];
+
+    protected $hidden = ['password'];
 
     public function cart(): HasOne
     {
